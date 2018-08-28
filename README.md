@@ -21,7 +21,7 @@ docker image ls
 This Docker run command:
 ```bash
 docker run -p 9999:8888 \
---mount 'type=bind,src="$(date)"/app,target=/app' mlnb
+--mount 'type=bind,src="$(pwd)"/app,target=/app' mlnb
 ```
 - creates a new instance for "mlnb" image and runs it
 - maps internal port 8888 to the host's 9999 and 
@@ -51,5 +51,5 @@ In folder containing the notebook:
 Also add 8000 to mapped internal ports when starting this image
 ```bash
 docker run -p 9999:8888 -p 9000:8000 \
---mount 'type=bind,src="$(date)"/app,target=/app' mlnb
+--mount 'type=bind,src="$(pwd)"/app,target=/app' mlnb
 ```
