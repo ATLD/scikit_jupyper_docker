@@ -2,15 +2,14 @@
 # Distributed under the terms of the Modified BSD License.
 # Source: https://github.com/jupyter/docker-stacks/blob/master/scipy-notebook/Dockerfile
 # usage:
-# docker build -t scipy-nb .
-# docker run -p 9999:8888 -p 9000:8000 \
-# --mount 'type=bind,src=/Users/ozgurozturk/IdeaProjects/,target=/app' scipy-nb
+# docker build -t mlnb .
+# docker run -p 9999:8888 \
+# --mount 'type=bind,src="$(pwd)"/app,target=/app' mlnb
 
+# # if you need to connect to live container, get its name:
 # docker ps
+# # and connect to it
 # docker exec -it <containerName>
-# cd "Machine-Learning-Books-With-Python/Intro to Scikit-Learn"
-# git submodule add https://github.com/hakimel/reveal.js.git reveal.js
-# jupyter nbconvert "Intro to Machine Learning.ipynb" --to slides --post serve
 
 FROM jupyter/minimal-notebook
 
@@ -36,7 +35,7 @@ RUN conda install --quiet --yes \
     'numexpr=2.6*' \
     'matplotlib=2.2*' \
     'scipy=1.1*' \
-    'seaborn=0.8*' \
+    'seaborn=0.9*' \
     'scikit-learn=0.19*' \
     'scikit-image=0.14*' \
     'sympy=1.1*' \
@@ -59,8 +58,8 @@ RUN conda install --quiet --yes \
     # Activate ipywidgets extension in the environment that runs the notebook server
     jupyter nbextension enable --py widgetsnbextension --sys-prefix && \
     # Also activate ipywidgets extension for JupyterLab
-    jupyter labextension install @jupyter-widgets/jupyterlab-manager@^0.35 && \
-    jupyter labextension install jupyterlab_bokeh@^0.5.0 && \
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager@^0.37.0 && \
+    jupyter labextension install jupyterlab_bokeh@^0.6.0 && \
     npm cache clean --force && \
     rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
     rm -rf /home/$NB_USER/.cache/yarn && \
@@ -84,11 +83,9 @@ RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
     fix-permissions /home/$NB_USER
 
 RUN pip install --user pyqt5
-# USER root
-# RUN apt-get install python3-pyqt5
-
-USER $NB_UID
 
 WORKDIR /app
 
 EXPOSE 8888 8000
+
+USER $NB_UID
